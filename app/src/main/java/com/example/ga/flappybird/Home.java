@@ -8,19 +8,27 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import com.example.ga.flappybird.RoomDB.AppDatabase;
+import com.example.ga.flappybird.model.Question;
 import com.example.ga.flappybird.model.Score;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Home extends AppCompatActivity {
@@ -35,6 +43,16 @@ public class Home extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+
+
+
+
+       // saveMCQ();
+
+
+
+
+
         initStartGameButton();
         initHighScoresButton();
         initLogoutButton();
@@ -46,6 +64,7 @@ public class Home extends AppCompatActivity {
                 bound = true;
                 myService.getStatus();
                 myService.DownloadAllScores();
+                myService.DownloadAllMCQs();
 
             }
             public void onServiceDisconnected(ComponentName className) {
@@ -54,7 +73,8 @@ public class Home extends AppCompatActivity {
         };
 
        // startDataSyncService();
-        new DataTask().execute();
+       // new saveScoreFirebase().execute();
+       // saveMCQ();
     }
 
 
@@ -159,6 +179,54 @@ public class Home extends AppCompatActivity {
         protected void onPostExecute(List<Score> scores) {
             super.onPostExecute(scores);
             Toast.makeText(getApplicationContext(),""+scores.size(),Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void saveMCQ()
+    {
+        Question question = new Question();
+        question.correct = 1;
+        question.question = "How is the developer feeling rn";
+        question.answers = new ArrayList<>();
+        question.answers.add("Happy");
+        question.answers.add("Sad");
+        question.answers.add("fine");
+        question.answers.add("Ajeeb");
+        question.topic = "Developers";
+        question.difficulty = "easy";
+
+        new saveMCQFirebase(question).execute();
+
+    }
+
+    public class saveMCQFirebase extends AsyncTask<Void,Void, Void>
+    {
+        Question s;
+        saveMCQFirebase(Question sc)
+        {
+            s = sc;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("MCQs").add(s)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+                    {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference)
+                        {
+                            Log.d("dasd", "DocumentSnapshot added with ID: " + documentReference.getId());
+                        }
+                    }).addOnFailureListener(new OnFailureListener()
+            {
+                @Override
+                public void onFailure(@NonNull Exception e)
+                {
+                    Log.w("asd", "Error adding document", e);
+                }
+            });
+            return null;
         }
     }
 }

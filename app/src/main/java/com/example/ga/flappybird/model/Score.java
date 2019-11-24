@@ -28,14 +28,6 @@ public class Score implements Serializable {
     }
 
 
-    public Score( int score, String email,String name) {
-
-        this.score = score;
-        this.email = email;
-        this.name = name;
-
-    }
-
 
     public int getScore() {
         return score;

@@ -16,13 +16,17 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.room.Room;
 
 import com.example.ga.flappybird.Home;
 import com.example.ga.flappybird.R;
+import com.example.ga.flappybird.RoomDB.AppDatabase;
 import com.example.ga.flappybird.model.Bird;
 import com.example.ga.flappybird.model.PipePair;
+import com.example.ga.flappybird.model.Question;
 import com.example.ga.flappybird.model.Score;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,7 +35,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -68,10 +74,14 @@ public class GameView extends View {
 
     private int score = 0;
 
+    List<Question> questionList;
+    int index = 0;
+
+
     public GameView(Context context) {
 
         super(context);
-
+        new getMCQs().execute();
         DisplayMetrics displaymetrics = new DisplayMetrics();
         ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
@@ -252,37 +262,20 @@ public class GameView extends View {
         builder.setMessage("Your score was: " + score).setTitle(
                 "Game over!");
 
-        builder.setPositiveButton("Play Again",
+        builder.setPositiveButton("Continue?",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        isPaused = false;
-                        resetGameState();
+//                        isPaused = false;
+//                        resetGameState();
                         dialog.dismiss();
+                        showMCQ();
                     }
                 });
 
         builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getContext(), Home.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(intent);
-                Activity activity = (Activity)getContext();
-                activity.finish();
-
-                Score s = new Score();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(user.getEmail()!=null)
-                    s.email = user.getEmail();
-                else
-                    s.email = user.getUid();
-                s.score = score;
-                if(user.getDisplayName()!=null)
-                    s.name = user.getDisplayName();
-                else
-                    s.name = "Guest_User"+user.getUid();
-
-                new DataTask(s).execute();
+                quitGame();
             }
         });
 
@@ -292,6 +285,107 @@ public class GameView extends View {
 
         dialog.show();
 
+    }
+
+    private void showMCQ() {
+        if(questionList!=null) {
+            if (index < questionList.size()) {
+                final Question question = questionList.get(index);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                //builder.setTitle("Answer a question to continue");
+                builder.setTitle(question.question);
+                builder.setItems(new CharSequence[] {question.answers.get(0), question.answers.get(1), question.answers.get(2), question.answers.get(3)},
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                switch (which) {
+                                    case 0:
+                                        if(question.correct == 0)
+                                        {
+                                            isPaused = false;
+                                            resetGameState();
+                                            dialog.dismiss();
+                                        }
+                                        else
+                                        {
+                                            quitGame();
+                                        }
+                                        break;
+                                    case 1:
+                                        if(question.correct == 1)
+                                        {
+                                            isPaused = false;
+                                            resetGameState();
+                                            dialog.dismiss();
+                                        }
+                                        else
+                                        {
+                                            quitGame();
+                                        }
+                                        break;
+                                    case 2:
+                                        if(question.correct == 2)
+                                        {
+                                            isPaused = false;
+                                            resetGameState();
+                                            dialog.dismiss();
+                                        }
+                                        else
+                                        {
+                                            quitGame();
+                                        }
+
+                                        break;
+                                    case 3:
+                                        if(question.correct == 3)
+                                        {
+                                            isPaused = false;
+                                            resetGameState();
+                                            dialog.dismiss();
+                                        }
+                                        else
+                                        {
+                                            quitGame();
+                                        }
+                                        break;
+                                }
+                            }
+                        });
+                builder.setCancelable(false);
+                builder.create().show();
+                index++;
+            }
+            if(index == questionList.size())
+                index=0;
+        }
+    }
+
+    public void quitGame()
+    {
+
+
+        Toast.makeText(getContext(),"Game OVER !!!",Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(getContext(), Home.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().startActivity(intent);
+        Activity activity = (Activity)getContext();
+        activity.finish();
+
+        Score s = new Score();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user.getEmail()!=null)
+            s.email = user.getEmail();
+        else
+            s.email = user.getUid();
+        s.score = score;
+        if(user.getDisplayName()!=null)
+            s.name = user.getDisplayName();
+        else
+            s.name = "Guest_User"+user.getUid();
+
+        new saveScoreFirebase(s).execute();
     }
 
     @Override
@@ -307,10 +401,10 @@ public class GameView extends View {
 
     }
 
-    public class DataTask extends AsyncTask<Void,Void, Void>
+    public class saveScoreFirebase extends AsyncTask<Void,Void, Void>
     {
         Score s;
-        DataTask(Score sc)
+        saveScoreFirebase(Score sc)
         {
             s = sc;
         }
@@ -334,6 +428,24 @@ public class GameView extends View {
                 }
             });
             return null;
+        }
+    }
+
+
+    public class getMCQs extends AsyncTask<Void,Void, List<Question>> {
+        @Override
+        protected List<Question> doInBackground(Void... voids) {
+
+            AppDatabase db = Room.databaseBuilder(getContext(), AppDatabase.class, "scores").build();
+
+            return db.mcqDao().getAll();
+        }
+
+        @Override
+        protected void onPostExecute(List<Question> questions) {
+            super.onPostExecute(questions);
+            questionList = new ArrayList<>(questions);
+            Toast.makeText(getContext(),""+questions.size(),Toast.LENGTH_SHORT).show();
         }
     }
 

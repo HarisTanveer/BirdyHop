@@ -263,6 +263,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     public void signInAnnon()
     {
+        progressBar.setVisibility(View.VISIBLE);
         final FirebaseAuth mauth = FirebaseAuth.getInstance();
         mauth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
