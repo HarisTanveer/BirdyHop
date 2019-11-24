@@ -425,7 +425,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         progressBar.setVisibility(View.GONE);
         if (user != null) {
-            if(user.getEmail() !=null)
+            if(user.getEmail() !=null && user.getUid() != null)
                 Log.d("CHECKING CURRENT USER",user.getEmail());
             startActivity(new Intent(LoginActivity.this, Home.class));
             finish();

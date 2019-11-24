@@ -101,8 +101,8 @@ public class GameView extends View {
 
     private void initBitmaps() {
 
-        this.birdBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.bird);
-        this.backgroundBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.background);
+        this.birdBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.newbird2);
+        this.backgroundBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_night);
         this.topPipeBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.obstacle_top);
         this.botPipeBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.obstacle_bottom);
 
