@@ -16,11 +16,14 @@
 
     <Button
         android:id="@+id/start_game_button"
-        android:text="Click to Play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/view_high_scores_button"
         android:layout_alignRight="@+id/view_high_scores_button"
-        android:layout_alignEnd="@+id/view_high_scores_button" />
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:text="Click to Play" />
+
     <Button
 
         android:id="@+id/view_high_scores_button"
@@ -32,9 +35,22 @@
 
     <Button
         android:id="@+id/logout"
-        android:text="Logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view_high_scores_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="Logout" />
+
+    <Button
+        android:id="@+id/select_topic"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="117dp"
+        android:layout_marginEnd="158dp"
+        android:layout_marginBottom="450dp"
+        android:text="@string/title_activity_topic_choose" />
 </RelativeLayout>

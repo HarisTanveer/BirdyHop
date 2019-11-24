@@ -45,6 +45,7 @@ public class Home extends AppCompatActivity {
         initStartGameButton();
         initHighScoresButton();
         initLogoutButton();
+        initTopicButton();
 
         //starting firebase service
         connection = new ServiceConnection() {
@@ -66,6 +67,18 @@ public class Home extends AppCompatActivity {
        // saveMCQ();
     }
 
+    private void initTopicButton() {
+        Button startButton = (Button)findViewById(R.id.select_topic);
+
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startGameIntent = new Intent(Home.this, TopicChoose.class);
+                startActivity(startGameIntent);
+                finish();
+            }
+        });
+    }
 
 
     @Override
