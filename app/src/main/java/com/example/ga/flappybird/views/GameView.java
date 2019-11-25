@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -41,6 +42,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class GameView extends View {
@@ -82,6 +85,7 @@ public class GameView extends View {
     boolean background;
     String birdcolor;
     String topic;
+    String gameover = "GAME OVER !";
 
     public GameView(Context context) {
 
@@ -323,7 +327,7 @@ public class GameView extends View {
         builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                quitGame();
+                quitGame(gameover);
             }
         });
 
@@ -339,7 +343,7 @@ public class GameView extends View {
         if(questionList!=null) {
             if (index < questionList.size()) {
                 final Question question = questionList.get(index);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 //builder.setTitle("Answer a question to continue");
                 builder.setTitle(question.question);
                 builder.setItems(new CharSequence[] {question.answers.get(0), question.answers.get(1), question.answers.get(2), question.answers.get(3)},
@@ -357,7 +361,8 @@ public class GameView extends View {
                                         }
                                         else
                                         {
-                                            quitGame();
+                                            dialog.dismiss();
+                                            quitGame(gameover);
                                         }
                                         break;
                                     case 1:
@@ -369,7 +374,8 @@ public class GameView extends View {
                                         }
                                         else
                                         {
-                                            quitGame();
+                                            dialog.dismiss();
+                                            quitGame(gameover);
                                         }
                                         break;
                                     case 2:
@@ -381,7 +387,8 @@ public class GameView extends View {
                                         }
                                         else
                                         {
-                                            quitGame();
+                                            dialog.dismiss();
+                                            quitGame(gameover);
                                         }
 
                                         break;
@@ -394,33 +401,49 @@ public class GameView extends View {
                                         }
                                         else
                                         {
-                                            quitGame();
+                                            dialog.dismiss();
+                                            quitGame(gameover);
                                         }
                                         break;
                                 }
                             }
                         });
                 builder.setCancelable(false);
-                builder.create().show();
+                final AlertDialog alert =  builder.create();
+                alert.show();
                 index++;
+
+
+
+                 Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if(isPaused)
+                        {
+                            alert.cancel();
+                            quitGame("Failed to answer in time !");
+                        }
+                    }
+                };
+                Handler handler = new Handler();
+                handler.postDelayed(runnable, 10000);
             }
+
+
             if(index == questionList.size())
                 index=0;
         }
     }
 
-    public void quitGame()
+    public void quitGame(String message)
     {
 
-
-        Toast.makeText(getContext(),"Game OVER !!!",Toast.LENGTH_LONG).show();
-
-        Intent intent = new Intent(getContext(), Home.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(intent);
-        Activity activity = (Activity)getContext();
-        activity.finish();
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(message);
+        builder.setMessage("Your score was: " + score);
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.create();
+        dialog.show();
         Score s = new Score();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user.getEmail()!=null)
@@ -434,6 +457,21 @@ public class GameView extends View {
             s.name = "Guest_User"+user.getUid();
 
         new saveScoreFirebase(s).execute();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                Intent intent = new Intent(getContext(), Home.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
+                Activity activity = (Activity)getContext();
+                activity.finish();
+            }
+
+        }, 2000);
+
     }
 
     @Override

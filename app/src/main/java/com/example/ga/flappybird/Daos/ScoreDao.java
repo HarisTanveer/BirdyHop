@@ -14,14 +14,17 @@ import java.util.List;
 @Dao
 public interface ScoreDao {
 
-    @Query("Select * from score")
+    @Query("Select * from score ORDER BY score DESC")
     List<Score> getAll();
 
     @Query("Select * from score where email In (:userIds)")
     List<Score> loadAllByIds(int[] userIds);
 
-    @Query("Select * from score where email = :first limit 1")
-    Score findByEmail(String first);
+    @Query("Select * from score where email = :first  ORDER BY score DESC Limit 5 ")
+    List<Score> findByEmail(String first);
+
+    @Query("Select * from score ORDER BY score DESC Limit 20")
+    List<Score> findByHighest();
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

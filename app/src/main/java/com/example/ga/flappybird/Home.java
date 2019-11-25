@@ -139,7 +139,15 @@ public class Home extends AppCompatActivity {
 
     private void initHighScoresButton() {
 
+        Button startButton = (Button)findViewById(R.id.view_high_scores_button);
 
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startGameIntent = new Intent(Home.this, Leaderboard.class);
+                startActivity(startGameIntent);
+            }
+        });
 
     }
 
