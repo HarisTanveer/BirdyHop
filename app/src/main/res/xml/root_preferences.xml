@@ -14,37 +14,50 @@
   ~ limitations under the License.
   -->
 
+
+
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
+    <PreferenceCategory app:title="Theme">
+
+        <SwitchPreferenceCompat
+            app:key="Night_mode"
+            app:title="Night Mode" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Topic">
+
+        <SwitchPreferenceCompat
+            app:key="change_topic"
+            app:title="Change Topic" />
 
         <ListPreference
-            app:defaultValue="reply"
+            app:dependency="change_topic"
+            app:defaultValue="Internet"
             app:entries="@array/reply_entries"
             app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
+            app:key="topic_select"
+            app:title="Select Prefered Topic"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory app:title="Bird Color">
 
         <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+            app:key="Bird_color"
+            app:title="Change Color" />
 
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+        <ListPreference
+            app:dependency="Bird_color"
+            app:defaultValue="Default"
+            app:entries="@array/bird_colors"
+            app:entryValues="@array/bird_color_values"
+            app:key="color_select"
+            app:title="Select Prefered Topic"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

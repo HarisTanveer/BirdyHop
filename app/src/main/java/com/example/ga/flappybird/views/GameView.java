@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -77,6 +79,9 @@ public class GameView extends View {
     List<Question> questionList;
     int index = 0;
 
+    boolean background;
+    String birdcolor;
+    String topic;
 
     public GameView(Context context) {
 
@@ -96,13 +101,56 @@ public class GameView extends View {
 
         initBitmaps();
         resetGameState();
+        initSettings();
+
+    }
+
+    private void initSettings() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        background = sharedPref.getBoolean("Night_mode",false);
+        if(background)
+            this.backgroundBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_night);
+        else
+            this.backgroundBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.background);
+
+        if( sharedPref.getBoolean("change_topic",false))
+        {
+            topic = sharedPref.getString("topic_select","Game");
+        }
+        else
+        {
+            topic = "Game";
+        }
+
+        if( sharedPref.getBoolean("Bird_color",false))
+        {
+            birdcolor = sharedPref.getString("color_select","Default");
+            if(birdcolor.equalsIgnoreCase("brown"))
+            {
+                this.birdBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.newbird2);
+            }
+            else if(birdcolor.equalsIgnoreCase("yellow"))
+            {
+                this.birdBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.newbird);
+            }
+            else
+                this.birdBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.bird);
+
+        }
+        else
+        {
+            birdcolor = "Default";
+            this.birdBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.bird);
+
+        }
 
     }
 
     private void initBitmaps() {
 
-        this.birdBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.newbird);
-        this.backgroundBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_night);
+//        this.birdBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.newbird);
+       // this.backgroundBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_night);
         this.topPipeBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.obstacle_top);
         this.botPipeBitMap = BitmapFactory.decodeResource(getResources(), R.drawable.obstacle_bottom);
 

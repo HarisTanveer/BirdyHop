@@ -73,9 +73,9 @@ public class Home extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent startGameIntent = new Intent(Home.this, TopicChoose.class);
+                Intent startGameIntent = new Intent(Home.this, Settings.class);
                 startActivity(startGameIntent);
-                finish();
+
             }
         });
     }
