@@ -90,7 +90,6 @@ public class GameView extends View {
     public GameView(Context context) {
 
         super(context);
-        new getMCQs().execute();
         DisplayMetrics displaymetrics = new DisplayMetrics();
         ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
@@ -106,7 +105,7 @@ public class GameView extends View {
         initBitmaps();
         resetGameState();
         initSettings();
-
+        new getMCQs().execute();
     }
 
     private void initSettings() {
@@ -327,6 +326,7 @@ public class GameView extends View {
         builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
                 quitGame(gameover);
             }
         });
@@ -524,7 +524,7 @@ public class GameView extends View {
 
             AppDatabase db = Room.databaseBuilder(getContext(), AppDatabase.class, "scores").build();
 
-            return db.mcqDao().getAll();
+            return db.mcqDao().findByTopic(topic);
         }
 
         @Override

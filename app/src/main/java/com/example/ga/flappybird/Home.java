@@ -94,19 +94,6 @@ public class Home extends AppCompatActivity {
         bound = false;
     }
 
-    private void startDataSyncService(){
-        SharedPreferences preferences = getSharedPreferences("service",Context.MODE_PRIVATE);
-        boolean started = preferences.getBoolean("started",false);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        Intent serviceIntent = new Intent(this,MyFirebaseService.class);
-        startService(serviceIntent);
-
-        editor.putBoolean("started",true);
-        editor.commit();
-
-    }
-
     private void initLogoutButton() {
         Button logout = (Button)findViewById(R.id.logout);
 
