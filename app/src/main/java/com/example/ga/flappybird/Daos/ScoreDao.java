@@ -26,6 +26,8 @@ public interface ScoreDao {
     @Query("Select * from score ORDER BY score DESC Limit 20")
     List<Score> findByHighest();
 
+    @Query("Select * from score where email =:email ORDER BY score DESC Limit 1")
+    Score findUserHighest(String email);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Score> scores);

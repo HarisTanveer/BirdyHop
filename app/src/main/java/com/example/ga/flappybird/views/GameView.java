@@ -13,14 +13,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.room.Room;
 
@@ -41,9 +45,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 
 public class GameView extends View {
@@ -86,6 +92,7 @@ public class GameView extends View {
     String birdcolor;
     String topic;
     String gameover = "GAME OVER !";
+    private Handler handler;
 
     public GameView(Context context) {
 
@@ -106,6 +113,8 @@ public class GameView extends View {
         resetGameState();
         initSettings();
         new getMCQs().execute();
+
+
     }
 
     private void initSettings() {
@@ -355,12 +364,14 @@ public class GameView extends View {
                                     case 0:
                                         if(question.correct == 0)
                                         {
+                                            handler.removeCallbacksAndMessages(null);
                                             isPaused = false;
                                             resetGameState();
                                             dialog.dismiss();
                                         }
                                         else
                                         {
+                                            handler.removeCallbacksAndMessages(null);
                                             dialog.dismiss();
                                             quitGame(gameover);
                                         }
@@ -368,12 +379,14 @@ public class GameView extends View {
                                     case 1:
                                         if(question.correct == 1)
                                         {
+                                            handler.removeCallbacksAndMessages(null);
                                             isPaused = false;
                                             resetGameState();
                                             dialog.dismiss();
                                         }
                                         else
                                         {
+                                            handler.removeCallbacksAndMessages(null);
                                             dialog.dismiss();
                                             quitGame(gameover);
                                         }
@@ -381,12 +394,14 @@ public class GameView extends View {
                                     case 2:
                                         if(question.correct == 2)
                                         {
+                                            handler.removeCallbacksAndMessages(null);
                                             isPaused = false;
                                             resetGameState();
                                             dialog.dismiss();
                                         }
                                         else
                                         {
+                                            handler.removeCallbacksAndMessages(null);
                                             dialog.dismiss();
                                             quitGame(gameover);
                                         }
@@ -395,12 +410,14 @@ public class GameView extends View {
                                     case 3:
                                         if(question.correct == 3)
                                         {
+                                            handler.removeCallbacksAndMessages(null);
                                             isPaused = false;
                                             resetGameState();
                                             dialog.dismiss();
                                         }
                                         else
                                         {
+                                            handler.removeCallbacksAndMessages(null);
                                             dialog.dismiss();
                                             quitGame(gameover);
                                         }
@@ -409,7 +426,41 @@ public class GameView extends View {
                             }
                         });
                 builder.setCancelable(false);
+                builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        handler.removeCallbacksAndMessages(null);
+                        dialogInterface.dismiss();
+                        quitGame(gameover);
+                    }
+                });
+
                 final AlertDialog alert =  builder.create();
+                alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                    private static final int AUTO_DISMISS_MILLIS = 10000;
+                    @Override
+                    public void onShow(final DialogInterface dialog) {
+                        final Button defaultButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                        final CharSequence negativeButtonText = defaultButton.getText();
+                        new CountDownTimer(AUTO_DISMISS_MILLIS, 100) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                defaultButton.setText(String.format(
+                                        Locale.getDefault(), "%s (%d)",
+                                        negativeButtonText,
+                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1 //add one so it never displays zero
+                                ));
+                            }
+                            @Override
+                            public void onFinish() {
+                                if (((AlertDialog) dialog).isShowing()) {
+                                    dialog.dismiss();
+                                }
+                            }
+                        }.start();
+                    }
+                });
+
                 alert.show();
                 index++;
 
@@ -425,7 +476,7 @@ public class GameView extends View {
                         }
                     }
                 };
-                Handler handler = new Handler();
+                 handler = new Handler();
                 handler.postDelayed(runnable, 10000);
             }
 
@@ -446,10 +497,11 @@ public class GameView extends View {
         dialog.show();
         Score s = new Score();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user.getEmail()!=null)
+        if(user.getEmail()!="")
             s.email = user.getEmail();
         else
             s.email = user.getUid();
+
         s.score = score;
         if(user.getDisplayName()!=null)
             s.name = user.getDisplayName();
@@ -534,6 +586,7 @@ public class GameView extends View {
             Toast.makeText(getContext(),""+questions.size(),Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
 }

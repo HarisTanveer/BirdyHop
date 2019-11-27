@@ -65,5 +65,7 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="title_activity_leaderboard">Leaderboard</string>
 
+    <string name="answer">Answer in</string>
+
 
 </resources>

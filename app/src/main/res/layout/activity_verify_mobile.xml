@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:background="@drawable/background"
     android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="410dp"
+        android:layout_height="736dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp"
-            android:text="Phone Authentication"
-            android:textColor="@color/colorAccent"
-            android:textSize="20dp" />
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="313dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="30dp"
+            android:background="#030303"
+            android:text="Forgot your password?"
+            android:textColor="@color/browser_actions_bg_grey" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/outline"
             android:gravity="center_horizontal"
+            android:padding="5dp"
             android:text="Enter the OTP Code sent to your phone number"
-            android:textColor="@color/colorAccent"
-            android:textSize="14dp" />
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -36,12 +45,13 @@
 
             <EditText
                 android:id="@+id/code1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_width="300dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="55dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="100dp"
                 android:layout_marginEnd="100dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/edittexts"
                 android:hint="OTP Code"
                 android:inputType="number"
                 android:textColor="@color/input_login"
@@ -52,14 +62,14 @@
 
         <Button
             android:id="@+id/btn_verify"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
             android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="20dip"
             android:layout_marginBottom="20dp"
-            android:background="@color/btn_login_register"
+            android:background="@drawable/custom_button"
             android:text="Verify"
-            android:textColor="@android:color/white" />
+            android:textColor="#013634" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -69,4 +79,4 @@
             android:visibility="gone" />
 
     </LinearLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

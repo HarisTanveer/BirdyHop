@@ -1,6 +1,5 @@
 package com.example.ga.flappybird;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -115,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnSignup = (Button) findViewById(R.id.btn_signup);
-        btnLogin = (Button) findViewById(R.id.btn_login);
+        btnLogin = (Button) findViewById(R.id.sign_up_button);
         btnReset = (Button) findViewById(R.id.btn_reset_password);
         guestLogin = (Button) findViewById(R.id.guest_login);
 

@@ -48,7 +48,10 @@ public class HighscoreAdapter extends ArrayAdapter<Score>
 
 
         TextView userid = (TextView) convertView.findViewById(R.id.user_id);
-        userid.setText(t.email);
+        if(t.email!="")
+            userid.setText(t.email);
+        else
+            userid.setText(t.name);
 
         TextView sc = (TextView) convertView.findViewById(R.id.user_leaderboard);
         sc.setText("Score : "+t.score);
@@ -67,9 +70,10 @@ public class HighscoreAdapter extends ArrayAdapter<Score>
         int index=-1;
         for (int i=0;i<all.size();i++)
         {
-            if(all.get(i).email.equalsIgnoreCase(t.email) && all.get(i).score == t.score)
-            {
-                index = i;
+            if(all.get(i).email!=null) {
+                if (all.get(i).email.equalsIgnoreCase(t.email) && all.get(i).score == t.score) {
+                    index = i;
+                }
             }
         }
 
