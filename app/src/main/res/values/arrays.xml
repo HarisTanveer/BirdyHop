@@ -1,8 +1,8 @@
 <resources>
     <!-- Reply Preference -->
     <string-array name="reply_entries">
-        <item>Internet</item>
-        <item>Game</item>
+        <item>Internet (Easy)</item>
+        <item>Pakistan (Hard)</item>
     </string-array>
 
     <string-array name="reply_values">
